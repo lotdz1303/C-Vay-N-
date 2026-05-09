@@ -16,6 +16,7 @@ CELL = 52
 MARGIN = 42
 BOARD_PIXELS = MARGIN * 2 + CELL * (BOARD_SIZE - 1)
 WIN_SCORE = 140
+CLICK_RADIUS = 28
 
 
 def init_game():
@@ -24,8 +25,8 @@ def init_game():
     st.session_state.board = st.session_state.game.board
     st.session_state.game_over = False
     st.session_state.message = "Bạn là X. AI là O. Bạn đi trước."
-    st.session_state.last_click_time = None
     st.session_state.board_key = st.session_state.get("board_key", 0) + 1
+    st.session_state.last_click_id = None
     st.session_state.result_effect = None
     st.session_state.effect_shown = False
 
@@ -38,6 +39,9 @@ if "result_effect" not in st.session_state:
 
 if "effect_shown" not in st.session_state:
     st.session_state.effect_shown = False
+
+if "last_click_id" not in st.session_state:
+    st.session_state.last_click_id = None
 
 
 def draw_board(board):
@@ -54,13 +58,13 @@ def draw_board(board):
         pos = MARGIN + i * CELL
 
         draw.line(
-            [(MARGIN, pos), (MARGIN + CELL * 8, pos)],
+            [(MARGIN, pos), (MARGIN + CELL * (BOARD_SIZE - 1), pos)],
             fill="#1f1305",
             width=2
         )
 
         draw.line(
-            [(pos, MARGIN), (pos, MARGIN + CELL * 8)],
+            [(pos, MARGIN), (pos, MARGIN + CELL * (BOARD_SIZE - 1))],
             fill="#1f1305",
             width=2
         )
@@ -119,7 +123,7 @@ def get_click_position(value):
                 nearest_row = row
                 nearest_col = col
 
-    if min_distance <= 16:
+    if min_distance <= CLICK_RADIUS:
         return nearest_row, nearest_col
 
     return None
@@ -182,6 +186,7 @@ def run_ai_move():
 
     if move is None:
         st.session_state.message = "AI không còn nước đi. Đang kiểm tra kết quả..."
+        check_game_over(force_end=True)
         return
 
     x, y = move
@@ -251,6 +256,9 @@ st.markdown(
     img {
         border-radius: 16px;
         box-shadow: 0 20px 45px rgba(0,0,0,0.55);
+        user-select: none;
+        -webkit-user-drag: none;
+        cursor: pointer;
     }
 
     div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
@@ -372,16 +380,16 @@ value = streamlit_image_coordinates(
 )
 
 if value is not None and not st.session_state.game_over:
-    click_time = str(value)
+    click_id = f"{st.session_state.board_key}_{value['x']}_{value['y']}"
 
-    if st.session_state.last_click_time != click_time:
-        st.session_state.last_click_time = click_time
-
+    if st.session_state.last_click_id != click_id:
+        st.session_state.last_click_id = click_id
         position = get_click_position(value)
 
         if position is not None:
             x, y = position
             player_move(x, y)
+            st.session_state.board_key += 1
             st.rerun()
 
 st.divider()
@@ -404,7 +412,7 @@ with col2:
         use_container_width=True
     ):
         check_game_over(force_end=True)
-        st.session_state.last_click_time = None
+        st.session_state.board_key += 1
         st.rerun()
 
 
