@@ -10,7 +10,7 @@ Một ứng dụng web mô phỏng trò chơi **Cờ Vây 9x9** được xây d�
 
 Trải nghiệm trực tiếp tại:
 
-[Go 9x9 AI Web App](https://https://covayne.streamlit.app/)
+[Go 9x9 AI Web App](https://covayne.streamlit.app/)
 
 ---
 
