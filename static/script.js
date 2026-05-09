@@ -18,6 +18,7 @@ const CLICK_RADIUS = 28;
 
 let currentState = null;
 let isThinking = false;
+let resultShown = false;
 
 canvas.width = BOARD_PIXELS;
 canvas.height = BOARD_PIXELS;
@@ -31,11 +32,17 @@ async function fetchState() {
 async function sendMove(x, y) {
     if (isThinking) return;
     if (!currentState || currentState.game_over) return;
+    if (currentState.board[x][y] !== ".") return;
 
     isThinking = true;
-    messageBox.textContent = "AI đang suy nghĩ...";
 
-    const response = await fetch("/api/move", {
+    const tempBoard = cloneBoard(currentState.board);
+    tempBoard[x][y] = "X";
+
+    drawBoard(tempBoard);
+    messageBox.textContent = `Bạn vừa đánh tại dòng ${x}, cột ${y}. AI đang suy nghĩ...`;
+
+    const playerResponse = await fetch("/api/player-move", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -43,13 +50,32 @@ async function sendMove(x, y) {
         body: JSON.stringify({ x, y })
     });
 
-    const data = await response.json();
-    updateState(data);
+    const playerData = await playerResponse.json();
+    updateState(playerData);
+
+    if (playerData.game_over) {
+        isThinking = false;
+        return;
+    }
+
+    messageBox.textContent = "AI đang suy nghĩ...";
+
+    await sleep(80);
+
+    const aiResponse = await fetch("/api/ai-move", {
+        method: "POST"
+    });
+
+    const aiData = await aiResponse.json();
+    updateState(aiData);
 
     isThinking = false;
 }
 
 async function resetGame() {
+    isThinking = false;
+    resultShown = false;
+
     const response = await fetch("/api/reset", {
         method: "POST"
     });
@@ -59,6 +85,8 @@ async function resetGame() {
 }
 
 async function finishGame() {
+    if (isThinking) return;
+
     const response = await fetch("/api/finish", {
         method: "POST"
     });
@@ -88,14 +116,28 @@ function showResult(data) {
     if (data.result_effect === "win") {
         resultBox.className = "result-box win";
         resultBox.textContent = "🎉 BẠN ĐÃ THẮNG AI 🎉";
-        launchConfetti();
+
+        if (!resultShown) {
+            launchConfetti();
+            resultShown = true;
+        }
     } else if (data.result_effect === "lose") {
         resultBox.className = "result-box lose";
         resultBox.textContent = "💀 BẠN ĐÃ THUA AI 💀";
+        resultShown = true;
     } else if (data.result_effect === "draw") {
         resultBox.className = "result-box draw";
         resultBox.textContent = "🤝 HÒA 🤝";
+        resultShown = true;
     }
+}
+
+function cloneBoard(board) {
+    return board.map(row => [...row]);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function drawBoard(board) {
