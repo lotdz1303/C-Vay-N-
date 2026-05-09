@@ -55,31 +55,30 @@ class MinimaxAI:
 
             return max_eval, best_move
 
-        else:
-            min_eval = math.inf
+        min_eval = math.inf
 
-            for move in valid_moves:
-                x, y = move
-                new_board = self.game.make_move(board, x, y, BLACK)
+        for move in valid_moves:
+            x, y = move
+            new_board = self.game.make_move(board, x, y, BLACK)
 
-                eval_score, _ = self.minimax(
-                    new_board,
-                    depth - 1,
-                    alpha,
-                    beta,
-                    True
-                )
+            eval_score, _ = self.minimax(
+                new_board,
+                depth - 1,
+                alpha,
+                beta,
+                True
+            )
 
-                if eval_score < min_eval:
-                    min_eval = eval_score
-                    best_move = move
+            if eval_score < min_eval:
+                min_eval = eval_score
+                best_move = move
 
-                beta = min(beta, eval_score)
+            beta = min(beta, eval_score)
 
-                if beta <= alpha:
-                    break
+            if beta <= alpha:
+                break
 
-            return min_eval, best_move
+        return min_eval, best_move
 
     def get_best_move(self, board):
         _, move = self.minimax(
