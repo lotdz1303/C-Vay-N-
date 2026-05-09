@@ -8,14 +8,24 @@ class MinimaxAI:
         self.depth = depth
 
     def minimax(self, board, depth, alpha, beta, maximizing):
-        if depth == 0 or self.game.is_game_over(board):
+        if self.game.is_game_over(board):
+            black_score, white_score = self.game.calculate_score(board)
+            return white_score - black_score, None
+
+        if depth == 0:
             return self.game.evaluate_board(board), None
 
         player = WHITE if maximizing else BLACK
         valid_moves = self.game.get_valid_moves(board, player)
 
         if not valid_moves:
-            return self.game.evaluate_board(board), None
+            return self.minimax(
+                board,
+                depth - 1,
+                alpha,
+                beta,
+                not maximizing
+            )
 
         best_move = None
 
