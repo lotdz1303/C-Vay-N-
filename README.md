@@ -38,9 +38,7 @@ Trải nghiệm trực tiếp tại:
 
 ## Cài đặt và chạy local
 
-### 1. Clone repository
-
-### 2. Cài đặt thư viện
+### 1. Cài đặt thư viện
 pip install -r requirements.txt
-### 3. Chạy ứng dụng
+### 2. Chạy ứng dụng
 streamlit run app.py
