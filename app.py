@@ -112,8 +112,8 @@ def state():
     return jsonify(build_state())
 
 
-@app.route("/api/move", methods=["POST"])
-def move():
+@app.route("/api/player-move", methods=["POST"])
+def player_move():
     if "board" not in session:
         new_game()
 
@@ -134,22 +134,37 @@ def move():
     board = game.make_move(board, x, y, BLACK)
     save_board(board)
 
-    if check_game_over(board):
+    session["message"] = f"Bạn vừa đánh tại dòng {x}, cột {y}. AI đang suy nghĩ..."
+
+    check_game_over(board)
+
+    return jsonify(build_state())
+
+
+@app.route("/api/ai-move", methods=["POST"])
+def ai_move():
+    if "board" not in session:
+        new_game()
+
+    if session.get("game_over", False):
         return jsonify(build_state())
 
-    ai = MinimaxAI(game, depth=1)
-    ai_move = ai.get_best_move(board)
+    game = get_game()
+    board = get_board()
 
-    if ai_move is None:
+    ai = MinimaxAI(game, depth=1)
+    move = ai.get_best_move(board)
+
+    if move is None:
         session["message"] = "AI không còn nước đi. Đang kiểm tra kết quả..."
         check_game_over(board, force_end=True)
         return jsonify(build_state())
 
-    ai_x, ai_y = ai_move
-    board = game.make_move(board, ai_x, ai_y, WHITE)
+    x, y = move
+    board = game.make_move(board, x, y, WHITE)
     save_board(board)
 
-    session["message"] = f"AI vừa đánh tại dòng {ai_x}, cột {ai_y}. Đến lượt bạn."
+    session["message"] = f"AI vừa đánh tại dòng {x}, cột {y}. Đến lượt bạn."
 
     check_game_over(board)
 
