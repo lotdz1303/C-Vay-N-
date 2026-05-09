@@ -15,7 +15,7 @@ st.set_page_config(
 CELL = 52
 MARGIN = 42
 BOARD_PIXELS = MARGIN * 2 + CELL * (BOARD_SIZE - 1)
-WIN_SCORE = 140
+WIN_SCORE = 100
 
 
 def init_game():
