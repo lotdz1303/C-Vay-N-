@@ -2,8 +2,8 @@ import copy
 
 BOARD_SIZE = 9
 EMPTY = "."
-BLACK = "X"   # Người chơi
-WHITE = "O"   # AI
+BLACK = "X"
+WHITE = "O"
 
 
 class GoGame:
@@ -127,11 +127,13 @@ class GoGame:
                     group_size = len(group)
 
                     center_bonus = 0
+
                     for x, y in group:
                         dist = abs(x - center) + abs(y - center)
                         center_bonus += max(0, 4 - dist)
 
                     danger_penalty = 0
+
                     if liberties <= 1:
                         danger_penalty = -15
 
@@ -173,6 +175,7 @@ class GoGame:
         for row in board:
             if EMPTY in row:
                 return False
+
         return True
 
     def is_game_over(self, board):
@@ -182,14 +185,18 @@ class GoGame:
         black_moves = self.get_valid_moves(board, BLACK)
         white_moves = self.get_valid_moves(board, WHITE)
 
-        return len(black_moves) == 0 and len(white_moves) == 0
+        if len(black_moves) == 0 and len(white_moves) == 0:
+            return True
+
+        return False
 
     def get_winner(self, board):
         black_score, white_score = self.calculate_score(board)
 
         if black_score > white_score:
             return BLACK, black_score, white_score
-        elif white_score > black_score:
+
+        if white_score > black_score:
             return WHITE, black_score, white_score
-        else:
-            return "DRAW", black_score, white_score
+
+        return "DRAW", black_score, white_score
