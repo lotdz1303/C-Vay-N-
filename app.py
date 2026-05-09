@@ -7,7 +7,7 @@ from ai import MinimaxAI
 
 
 st.set_page_config(
-    page_title="Cờ Vay 9x9 AI",
+    page_title="Cờ Vây 9x9 AI",
     page_icon="⚫",
     layout="centered"
 )
@@ -15,6 +15,7 @@ st.set_page_config(
 CELL = 52
 MARGIN = 42
 BOARD_PIXELS = MARGIN * 2 + CELL * (BOARD_SIZE - 1)
+WIN_SCORE = 140
 
 
 def init_game():
@@ -25,10 +26,18 @@ def init_game():
     st.session_state.message = "Bạn là X. AI là O. Bạn đi trước."
     st.session_state.last_click_time = None
     st.session_state.board_key = st.session_state.get("board_key", 0) + 1
+    st.session_state.result_effect = None
+    st.session_state.effect_shown = False
 
 
 if "game" not in st.session_state:
     init_game()
+
+if "result_effect" not in st.session_state:
+    st.session_state.result_effect = None
+
+if "effect_shown" not in st.session_state:
+    st.session_state.effect_shown = False
 
 
 def draw_board(board):
@@ -57,6 +66,7 @@ def draw_board(board):
         )
 
     star_points = [(2, 2), (2, 6), (4, 4), (6, 2), (6, 6)]
+
     for x, y in star_points:
         cx = MARGIN + y * CELL
         cy = MARGIN + x * CELL
@@ -115,6 +125,55 @@ def get_click_position(value):
     return None
 
 
+def set_result(effect, black_score, white_score):
+    st.session_state.game_over = True
+    st.session_state.result_effect = effect
+
+    if effect == "win":
+        st.session_state.message = (
+            f"🎉 BẠN ĐÃ THẮNG AI! Điểm bạn: {black_score} - Điểm AI: {white_score}"
+        )
+
+    elif effect == "lose":
+        st.session_state.message = (
+            f"💀 BẠN ĐÃ THUA AI! Điểm bạn: {black_score} - Điểm AI: {white_score}"
+        )
+
+    else:
+        st.session_state.message = (
+            f"🤝 HÒA! Điểm bạn: {black_score} - Điểm AI: {white_score}"
+        )
+
+
+def check_game_over(force_end=False):
+    game = st.session_state.game
+    black_score, white_score = game.calculate_score(st.session_state.board)
+
+    if black_score >= WIN_SCORE:
+        set_result("win", black_score, white_score)
+        return True
+
+    if white_score >= WIN_SCORE:
+        set_result("lose", black_score, white_score)
+        return True
+
+    if game.is_game_over(st.session_state.board) or force_end:
+        winner, black_score, white_score = game.get_winner(st.session_state.board)
+
+        if winner == BLACK:
+            set_result("win", black_score, white_score)
+
+        elif winner == WHITE:
+            set_result("lose", black_score, white_score)
+
+        else:
+            set_result("draw", black_score, white_score)
+
+        return True
+
+    return False
+
+
 def run_ai_move():
     game = st.session_state.game
     ai = st.session_state.ai
@@ -122,31 +181,12 @@ def run_ai_move():
     move = ai.get_best_move(st.session_state.board)
 
     if move is None:
-        st.session_state.message = "AI không còn nước đi."
+        st.session_state.message = "AI không còn nước đi. Đang kiểm tra kết quả..."
         return
 
     x, y = move
     st.session_state.board = game.make_move(st.session_state.board, x, y, WHITE)
     st.session_state.message = f"AI vừa đánh tại dòng {x}, cột {y}. Đến lượt bạn."
-
-
-def check_game_over():
-    game = st.session_state.game
-
-    if game.is_game_over(st.session_state.board):
-        st.session_state.game_over = True
-        winner, black_score, white_score = game.get_winner(st.session_state.board)
-
-        if winner == BLACK:
-            st.session_state.message = f"Bạn thắng! Điểm bạn: {black_score} - Điểm AI: {white_score}"
-        elif winner == WHITE:
-            st.session_state.message = f"AI thắng! Điểm bạn: {black_score} - Điểm AI: {white_score}"
-        else:
-            st.session_state.message = f"Hòa! Điểm bạn: {black_score} - Điểm AI: {white_score}"
-
-        return True
-
-    return False
 
 
 def player_move(x, y):
@@ -233,7 +273,7 @@ st.markdown(
 )
 
 
-st.title("CỜ VAY 9x9 - AI MINIMAX ALPHA-BETA")
+st.title("CỜ VÂY 9x9 - AI MINIMAX ALPHA-BETA")
 st.markdown(
     '<div class="sub-title">Người chơi: <b>X</b> | AI: <b>O</b></div>',
     unsafe_allow_html=True
@@ -250,9 +290,78 @@ with col2:
     st.metric("Điểm AI", white_score)
 
 with col3:
-    st.metric("Kích thước", "9x9")
+    st.metric("Mốc thắng", WIN_SCORE)
 
 st.info(st.session_state.message)
+
+if st.session_state.game_over:
+    if st.session_state.result_effect == "win":
+        st.markdown(
+            """
+            <div style="
+                background: linear-gradient(135deg, #16a34a, #22c55e);
+                padding: 24px;
+                border-radius: 18px;
+                text-align: center;
+                color: white;
+                font-size: 30px;
+                font-weight: 900;
+                margin: 20px 0;
+                box-shadow: 0 20px 45px rgba(34,197,94,0.35);
+            ">
+                🎉 BẠN ĐÃ THẮNG AI 🎉
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if not st.session_state.effect_shown:
+            st.balloons()
+            st.session_state.effect_shown = True
+
+    elif st.session_state.result_effect == "lose":
+        st.markdown(
+            """
+            <div style="
+                background: linear-gradient(135deg, #7f1d1d, #dc2626);
+                padding: 24px;
+                border-radius: 18px;
+                text-align: center;
+                color: white;
+                font-size: 30px;
+                font-weight: 900;
+                margin: 20px 0;
+                box-shadow: 0 20px 45px rgba(220,38,38,0.35);
+            ">
+                💀 BẠN ĐÃ THUA AI 💀
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if not st.session_state.effect_shown:
+            st.snow()
+            st.session_state.effect_shown = True
+
+    elif st.session_state.result_effect == "draw":
+        st.markdown(
+            """
+            <div style="
+                background: linear-gradient(135deg, #334155, #64748b);
+                padding: 24px;
+                border-radius: 18px;
+                text-align: center;
+                color: white;
+                font-size: 30px;
+                font-weight: 900;
+                margin: 20px 0;
+                box-shadow: 0 20px 45px rgba(100,116,139,0.35);
+            ">
+                🤝 HÒA 🤝
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 board_image = draw_board(st.session_state.board)
 
@@ -294,25 +403,7 @@ with col2:
         key="finish_game_btn",
         use_container_width=True
     ):
-        st.session_state.game_over = True
-
-        winner, black_score, white_score = st.session_state.game.get_winner(
-            st.session_state.board
-        )
-
-        if winner == BLACK:
-            st.session_state.message = (
-                f"Bạn thắng! Điểm bạn: {black_score} - Điểm AI: {white_score}"
-            )
-        elif winner == WHITE:
-            st.session_state.message = (
-                f"AI thắng! Điểm bạn: {black_score} - Điểm AI: {white_score}"
-            )
-        else:
-            st.session_state.message = (
-                f"Hòa! Điểm bạn: {black_score} - Điểm AI: {white_score}"
-            )
-
+        check_game_over(force_end=True)
         st.session_state.last_click_time = None
         st.rerun()
 
