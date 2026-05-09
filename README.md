@@ -1,8 +1,8 @@
 # Go 9x9 AI Web App
 
-Một ứng dụng web mô phỏng trò chơi **Cờ Vây 9x9** được xây dựng bằng **Python Streamlit**, tích hợp AI có khả năng tự động đưa ra nước đi dựa trên thuật toán **Minimax**, **Alpha-Beta Pruning** và **Heuristic Evaluation**.
+Một ứng dụng web mô phỏng trò chơi **C[object Object]ờ Vây 9x9**, được xây dựng bằng **Python Flask**, kết hợp giao diện **HTML/CSS/JavaScript** và tích hợp AI có khả năng tự động đưa ra nước đi dựa trên thuật toán **Minimax**, **Alpha-Beta Pruning** và **Heuristic Evaluation**.
 
-Ứng dụng hướng đến mục tiêu minh họa cách AI có thể phân tích trạng thái bàn cờ, đánh giá lợi thế và lựa chọn nước đi tối ưu trong phạm vi bàn cờ 9x9.
+Ứng dụng hướng đến mục tiêu minh họa cách AI có thể phân tích trạng thái bàn cờ, đánh giá lợi thế và lựa chọn nước đi phù hợp trong phạm vi bàn cờ 9x9.
 
 ---
 
@@ -10,38 +10,50 @@ Một ứng dụng web mô phỏng trò chơi **Cờ Vây 9x9** được xây d�
 
 Trải nghiệm trực tiếp tại:
 
-[Go 9x9 AI Web App](https://covayne.streamlit.app/)
+[Go 9x9 AI Web App](https://c-vay-n.onrender.com/)
 
 ---
 
 ## Tính năng chính
 
 - Giao diện chơi cờ vây 9x9 trực quan trên web
-- Người chơi có thể thi đấu với AI
+- Người chơi có thể thi đấu trực tiếp với AI
+- Bàn cờ được vẽ bằng HTML Canvas, giúp thao tác click mượt hơn
+- AI tự động phân tích bàn cờ và đưa ra nước đi
 - AI sử dụng thuật toán Minimax để tìm nước đi phù hợp
 - Tối ưu tốc độ tìm kiếm bằng Alpha-Beta Pruning
-- Đánh giá thế cờ bằng Heuristic Evaluation
-- Hỗ trợ chạy trực tiếp trên trình duyệt thông qua Streamlit
-- Có thể triển khai nhanh trên Streamlit Community Cloud
+- Đánh giá trạng thái bàn cờ bằng Heuristic Evaluation
+- Có hệ thống tính điểm giữa người chơi và AI
+- Hiển thị kết quả thắng, thua hoặc hòa khi ván cờ kết thúc
+- Có thể triển khai online để người dùng bấm link và chơi trực tiếp
 
 ---
 
 ## Công nghệ sử dụng
 
-- **Python** – xử lý logic trò chơi và thuật toán AI
-- **Streamlit** – xây dựng giao diện web tương tác
-- **Minimax Algorithm** – thuật toán ra quyết định cho AI
-- **Alpha-Beta Pruning** – tối ưu quá trình tìm kiếm nước đi
-- **Heuristic Evaluation** – đánh giá chất lượng trạng thái bàn cờ
+| Công nghệ | Vai trò |
+|---|---|
+| Python | Xử lý logic trò chơi và thuật toán AI |
+| Flask | Xây dựng backend web và API xử lý lượt chơi |
+| HTML | Xây dựng cấu trúc giao diện web |
+| CSS | Thiết kế giao diện, màu sắc và bố cục |
+| JavaScript | Xử lý thao tác click, cập nhật bàn cờ và gọi API |
+| Canvas API | Vẽ bàn cờ và quân cờ trên trình duyệt |
+| Minimax Algorithm | Thuật toán giúp AI lựa chọn nước đi |
+| Alpha-Beta Pruning | Tối ưu quá trình tìm kiếm nước đi |
+| Heuristic Evaluation | Đánh giá độ tốt của trạng thái bàn cờ |
 
 ---
 
 ## Cài đặt và chạy local
 
 ### 1. Cài đặt thư viện
+
+bash
 pip install -r requirements.txt
+
 ### 2. Chạy ứng dụng
-streamlit run app.py
+python app.py
 ## 3. Bảng Phân Công Công Việc Chi Tiết
 | STT | Họ và Tên | MSSV | Vai trò | Chi tiết công việc |
 |---|---|---|---|---|
