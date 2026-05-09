@@ -1,4 +1,6 @@
 import streamlit as st
+from PIL import Image, ImageDraw
+from streamlit_image_coordinates import streamlit_image_coordinates
 
 from game_logic import GoGame, BOARD_SIZE, BLACK, WHITE
 from ai import MinimaxAI
@@ -10,6 +12,9 @@ st.set_page_config(
     layout="centered"
 )
 
+CELL = 52
+MARGIN = 42
+BOARD_PIXELS = MARGIN * 2 + CELL * (BOARD_SIZE - 1)
 WIN_SCORE = 140
 
 
@@ -19,6 +24,8 @@ def init_game():
     st.session_state.board = st.session_state.game.board
     st.session_state.game_over = False
     st.session_state.message = "Bạn là X. AI là O. Bạn đi trước."
+    st.session_state.last_click_time = None
+    st.session_state.board_key = st.session_state.get("board_key", 0) + 1
     st.session_state.result_effect = None
     st.session_state.effect_shown = False
 
@@ -33,6 +40,91 @@ if "effect_shown" not in st.session_state:
     st.session_state.effect_shown = False
 
 
+def draw_board(board):
+    img = Image.new("RGB", (BOARD_PIXELS, BOARD_PIXELS), "#d9a441")
+    draw = ImageDraw.Draw(img)
+
+    draw.rectangle(
+        [8, 8, BOARD_PIXELS - 8, BOARD_PIXELS - 8],
+        outline="#7c4a12",
+        width=14
+    )
+
+    for i in range(BOARD_SIZE):
+        pos = MARGIN + i * CELL
+
+        draw.line(
+            [(MARGIN, pos), (MARGIN + CELL * 8, pos)],
+            fill="#1f1305",
+            width=2
+        )
+
+        draw.line(
+            [(pos, MARGIN), (pos, MARGIN + CELL * 8)],
+            fill="#1f1305",
+            width=2
+        )
+
+    star_points = [(2, 2), (2, 6), (4, 4), (6, 2), (6, 6)]
+
+    for x, y in star_points:
+        cx = MARGIN + y * CELL
+        cy = MARGIN + x * CELL
+        draw.ellipse([cx - 4, cy - 4, cx + 4, cy + 4], fill="#1f1305")
+
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            cx = MARGIN + j * CELL
+            cy = MARGIN + i * CELL
+
+            if board[i][j] == BLACK:
+                draw.ellipse(
+                    [cx - 18, cy - 18, cx + 18, cy + 18],
+                    fill="#111111",
+                    outline="#000000",
+                    width=2
+                )
+
+            elif board[i][j] == WHITE:
+                draw.ellipse(
+                    [cx - 18, cy - 18, cx + 18, cy + 18],
+                    fill="#f8fafc",
+                    outline="#9ca3af",
+                    width=2
+                )
+
+    return img
+
+
+def get_click_position(value):
+    if value is None:
+        return None
+
+    click_x = value["x"]
+    click_y = value["y"]
+
+    nearest_row = None
+    nearest_col = None
+    min_distance = 999999
+
+    for row in range(BOARD_SIZE):
+        for col in range(BOARD_SIZE):
+            point_x = MARGIN + col * CELL
+            point_y = MARGIN + row * CELL
+
+            distance = ((click_x - point_x) ** 2 + (click_y - point_y) ** 2) ** 0.5
+
+            if distance < min_distance:
+                min_distance = distance
+                nearest_row = row
+                nearest_col = col
+
+    if min_distance <= 16:
+        return nearest_row, nearest_col
+
+    return None
+
+
 def set_result(effect, black_score, white_score):
     st.session_state.game_over = True
     st.session_state.result_effect = effect
@@ -41,10 +133,12 @@ def set_result(effect, black_score, white_score):
         st.session_state.message = (
             f"🎉 BẠN ĐÃ THẮNG AI! Điểm bạn: {black_score} - Điểm AI: {white_score}"
         )
+
     elif effect == "lose":
         st.session_state.message = (
             f"💀 BẠN ĐÃ THUA AI! Điểm bạn: {black_score} - Điểm AI: {white_score}"
         )
+
     else:
         st.session_state.message = (
             f"🤝 HÒA! Điểm bạn: {black_score} - Điểm AI: {white_score}"
@@ -68,8 +162,10 @@ def check_game_over(force_end=False):
 
         if winner == BLACK:
             set_result("win", black_score, white_score)
+
         elif winner == WHITE:
             set_result("lose", black_score, white_score)
+
         else:
             set_result("draw", black_score, white_score)
 
@@ -86,7 +182,6 @@ def run_ai_move():
 
     if move is None:
         st.session_state.message = "AI không còn nước đi. Đang kiểm tra kết quả..."
-        check_game_over(force_end=True)
         return
 
     x, y = move
@@ -111,42 +206,6 @@ def player_move(x, y):
 
     run_ai_move()
     check_game_over()
-
-
-def draw_board_buttons():
-    board = st.session_state.board
-
-    st.markdown('<div class="board-wrap">', unsafe_allow_html=True)
-
-    for i in range(BOARD_SIZE):
-        cols = st.columns(BOARD_SIZE, gap="small")
-
-        for j in range(BOARD_SIZE):
-            cell = board[i][j]
-
-            if cell == BLACK:
-                label = "●"
-                key = f"black_{i}_{j}"
-            elif cell == WHITE:
-                label = "○"
-                key = f"white_{i}_{j}"
-            else:
-                label = "·"
-                key = f"empty_{i}_{j}"
-
-            with cols[j]:
-                clicked = st.button(
-                    label,
-                    key=key,
-                    use_container_width=True,
-                    disabled=st.session_state.game_over or cell != "."
-                )
-
-                if clicked:
-                    player_move(i, j)
-                    st.rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
 
 st.markdown(
@@ -189,43 +248,9 @@ st.markdown(
         border-radius: 12px;
     }
 
-    .board-wrap {
-        background: #d9a441;
-        border: 10px solid #7c4a12;
-        border-radius: 18px;
-        padding: 18px;
-        margin-top: 20px;
+    img {
+        border-radius: 16px;
         box-shadow: 0 20px 45px rgba(0,0,0,0.55);
-    }
-
-    div[data-testid="column"] {
-        padding: 0px !important;
-    }
-
-    div[data-testid="stButton"] > button {
-        height: 46px !important;
-        min-height: 46px !important;
-        width: 46px !important;
-        border-radius: 50% !important;
-        font-size: 28px !important;
-        font-weight: 900 !important;
-        padding: 0px !important;
-        margin: 2px auto !important;
-        background: #c98f2e !important;
-        color: #1f1305 !important;
-        border: 2px solid #8a5a1f !important;
-        transition: 0.08s ease-in-out !important;
-    }
-
-    div[data-testid="stButton"] > button:hover {
-        transform: scale(1.08);
-        border: 2px solid #facc15 !important;
-        background: #e0a744 !important;
-    }
-
-    div[data-testid="stButton"] > button:disabled {
-        opacity: 1 !important;
-        transform: none !important;
     }
 
     div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
@@ -338,7 +363,26 @@ if st.session_state.game_over:
             unsafe_allow_html=True
         )
 
-draw_board_buttons()
+board_image = draw_board(st.session_state.board)
+
+value = streamlit_image_coordinates(
+    board_image,
+    key=f"go_board_{st.session_state.board_key}",
+    width=BOARD_PIXELS
+)
+
+if value is not None and not st.session_state.game_over:
+    click_time = str(value)
+
+    if st.session_state.last_click_time != click_time:
+        st.session_state.last_click_time = click_time
+
+        position = get_click_position(value)
+
+        if position is not None:
+            x, y = position
+            player_move(x, y)
+            st.rerun()
 
 st.divider()
 
@@ -360,6 +404,7 @@ with col2:
         use_container_width=True
     ):
         check_game_over(force_end=True)
+        st.session_state.last_click_time = None
         st.rerun()
 
 
