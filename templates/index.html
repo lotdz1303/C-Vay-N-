@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cờ Vây 9x9 AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="app">
+        <section class="hero">
+            <h1>CỜ VÂY 9x9 - AI MINIMAX ALPHA-BETA</h1>
+            <p>Người chơi: <b>X</b> | AI: <b>O</b></p>
+        </section>
+
+        <section class="score-panel">
+            <div class="score-card">
+                <span>Điểm người chơi</span>
+                <strong id="blackScore">0</strong>
+            </div>
+
+            <div class="score-card">
+                <span>Điểm AI</span>
+                <strong id="whiteScore">0</strong>
+            </div>
+
+            <div class="score-card">
+                <span>Mốc thắng</span>
+                <strong id="winScore">140</strong>
+            </div>
+        </section>
+
+        <section class="message-box" id="messageBox">
+            Đang tải game...
+        </section>
+
+        <section id="resultBox" class="result-box hidden"></section>
+
+        <section class="board-section">
+            <canvas id="goBoard" width="500" height="500"></canvas>
+        </section>
+
+        <section class="button-panel">
+            <button id="resetBtn">🔄 Chơi lại</button>
+            <button id="finishBtn">🏁 Kết thúc & tính điểm</button>
+        </section>
+
+        <section class="guide">
+            <details>
+                <summary>Giải thích thuật toán</summary>
+                <p>
+                    AI sử dụng thuật toán <b>Minimax</b> để giả lập các nước đi có thể xảy ra.
+                    Trong quá trình tìm kiếm, chương trình dùng <b>Alpha-Beta Pruning</b>
+                    để loại bỏ những nhánh không cần xét, giúp AI tìm nước đi nhanh hơn.
+                </p>
+
+                <ul>
+                    <li>Số quân trong nhóm</li>
+                    <li>Số khí còn lại của nhóm quân</li>
+                    <li>Chênh lệch điểm giữa AI và người chơi</li>
+                </ul>
+            </details>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
