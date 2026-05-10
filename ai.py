@@ -3,10 +3,10 @@ from game_logic import BLACK, WHITE, EMPTY, BOARD_SIZE
 
 
 class MinimaxAI:
-    def __init__(self, game, depth=1):
+    def __init__(self, game, depth=2):
         self.game = game
         self.depth = depth
-        self.max_candidates = 14
+        self.max_candidates = 8
 
     def get_candidate_moves(self, board, player):
         candidates = set()
@@ -14,11 +14,13 @@ class MinimaxAI:
 
         for i in range(BOARD_SIZE):
             for j in range(BOARD_SIZE):
+
                 if board[i][j] != EMPTY:
                     has_stone = True
 
                     for dx in range(-1, 2):
                         for dy in range(-1, 2):
+
                             nx = i + dx
                             ny = j + dy
 
@@ -38,7 +40,11 @@ class MinimaxAI:
         if not valid_moves:
             for i in range(BOARD_SIZE):
                 for j in range(BOARD_SIZE):
-                    if board[i][j] == EMPTY and self.game.is_valid_move(board, i, j, player):
+
+                    if (
+                        board[i][j] == EMPTY
+                        and self.game.is_valid_move(board, i, j, player)
+                    ):
                         valid_moves.append((i, j))
 
         valid_moves.sort(
@@ -50,27 +56,67 @@ class MinimaxAI:
 
     def move_priority(self, board, move, player):
         x, y = move
-        center = BOARD_SIZE // 2
-        score = 0
 
-        distance_to_center = abs(x - center) + abs(y - center)
-        score += max(0, 8 - distance_to_center)
+        center = BOARD_SIZE // 2
+
+        score = 0
 
         opponent = BLACK if player == WHITE else WHITE
 
+        distance_to_center = abs(x - center) + abs(y - center)
+
+        score += max(0, 10 - distance_to_center)
+
+        ally_neighbors = 0
+        enemy_neighbors = 0
+        empty_neighbors = 0
+
         for nx, ny in self.game.neighbors(x, y):
+
             if board[nx][ny] == player:
-                score += 4
+                ally_neighbors += 1
+
             elif board[nx][ny] == opponent:
-                score += 3
+                enemy_neighbors += 1
+
+            else:
+                empty_neighbors += 1
+
+        score += ally_neighbors * 12
+
+        score += enemy_neighbors * 8
+
+        if ally_neighbors >= 2:
+            score += 25
+
+        if enemy_neighbors >= 2:
+            score += 18
+
+        if empty_neighbors <= 1:
+            score -= 15
+
+        surround_bonus = 0
+
+        for nx, ny in self.game.neighbors(x, y):
+
+            if board[nx][ny] == opponent:
+
+                enemy_liberties = self.game.count_liberties(board, nx, ny)
+
+                if enemy_liberties <= 2:
+                    surround_bonus += 20
+
+        score += surround_bonus
 
         return score
 
     def minimax(self, board, depth, alpha, beta, maximizing):
+
         if depth == 0:
             return self.game.evaluate_board(board), None
 
         player = WHITE if maximizing else BLACK
+
         valid_moves = self.get_candidate_moves(board, player)
 
         if not valid_moves:
@@ -79,10 +125,13 @@ class MinimaxAI:
         best_move = None
 
         if maximizing:
+
             max_eval = -math.inf
 
             for move in valid_moves:
+
                 x, y = move
+
                 new_board = self.game.make_move(board, x, y, WHITE)
 
                 eval_score, _ = self.minimax(
@@ -104,32 +153,37 @@ class MinimaxAI:
 
             return max_eval, best_move
 
-        min_eval = math.inf
+        else:
 
-        for move in valid_moves:
-            x, y = move
-            new_board = self.game.make_move(board, x, y, BLACK)
+            min_eval = math.inf
 
-            eval_score, _ = self.minimax(
-                new_board,
-                depth - 1,
-                alpha,
-                beta,
-                True
-            )
+            for move in valid_moves:
 
-            if eval_score < min_eval:
-                min_eval = eval_score
-                best_move = move
+                x, y = move
 
-            beta = min(beta, eval_score)
+                new_board = self.game.make_move(board, x, y, BLACK)
 
-            if beta <= alpha:
-                break
+                eval_score, _ = self.minimax(
+                    new_board,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    True
+                )
 
-        return min_eval, best_move
+                if eval_score < min_eval:
+                    min_eval = eval_score
+                    best_move = move
+
+                beta = min(beta, eval_score)
+
+                if beta <= alpha:
+                    break
+
+            return min_eval, best_move
 
     def get_best_move(self, board):
+
         _, move = self.minimax(
             board,
             self.depth,
