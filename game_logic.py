@@ -113,43 +113,40 @@ class GoGame:
         return moves
 
     def evaluate_board(self, board):
-        ai_score = 0
-        human_score = 0
-        visited = set()
 
-        center = BOARD_SIZE // 2
+    black_score = 0
+    white_score = 0
 
-        for i in range(BOARD_SIZE):
-            for j in range(BOARD_SIZE):
-                if board[i][j] != EMPTY and (i, j) not in visited:
-                    group = self.get_group(board, i, j, visited)
-                    liberties = self.count_liberties(board, group)
-                    group_size = len(group)
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
 
-                    center_bonus = 0
+            if board[i][j] == BLACK:
 
-                    for x, y in group:
-                        dist = abs(x - center) + abs(y - center)
-                        center_bonus += max(0, 4 - dist)
+                black_score += 10
 
-                    danger_penalty = 0
+                liberties = self.count_liberties(board, i, j)
 
-                    if liberties <= 1:
-                        danger_penalty = -15
+                black_score += liberties * 3
 
-                    score = (
-                        group_size * 12
-                        + liberties * 5
-                        + center_bonus * 2
-                        + danger_penalty
-                    )
+                for nx, ny in self.neighbors(i, j):
 
-                    if board[i][j] == WHITE:
-                        ai_score += score
-                    else:
-                        human_score += score
+                    if board[nx][ny] == BLACK:
+                        black_score += 2
 
-        return ai_score - human_score
+            elif board[i][j] == WHITE:
+
+                white_score += 10
+
+                liberties = self.count_liberties(board, i, j)
+
+                white_score += liberties * 3
+
+                for nx, ny in self.neighbors(i, j):
+
+                    if board[nx][ny] == WHITE:
+                        white_score += 2
+
+    return white_score - black_score
 
     def calculate_score(self, board):
         black_score = 0
