@@ -1,6 +1,7 @@
 import copy
 
 BOARD_SIZE = 9
+
 EMPTY = "."
 BLACK = "X"
 WHITE = "O"
@@ -9,13 +10,18 @@ WHITE = "O"
 class GoGame:
 
     def __init__(self):
+
         self.board = [
             [EMPTY for _ in range(BOARD_SIZE)]
             for _ in range(BOARD_SIZE)
         ]
 
     def in_board(self, x, y):
-        return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE
+
+        return (
+            0 <= x < BOARD_SIZE
+            and 0 <= y < BOARD_SIZE
+        )
 
     def neighbors(self, x, y):
 
@@ -38,7 +44,13 @@ class GoGame:
 
         return result
 
-    def get_group(self, board, x, y, visited=None):
+    def get_group(
+        self,
+        board,
+        x,
+        y,
+        visited=None
+    ):
 
         if visited is None:
             visited = set()
@@ -70,7 +82,11 @@ class GoGame:
 
         return group
 
-    def count_liberties(self, board, group):
+    def count_liberties(
+        self,
+        board,
+        group
+    ):
 
         liberties = set()
 
@@ -83,7 +99,11 @@ class GoGame:
 
         return len(liberties)
 
-    def remove_captured_stones(self, board, opponent):
+    def remove_captured_stones(
+        self,
+        board,
+        opponent
+    ):
 
         visited = set()
 
@@ -112,7 +132,13 @@ class GoGame:
                         for x, y in group:
                             board[x][y] = EMPTY
 
-    def is_valid_move(self, board, x, y, player):
+    def is_valid_move(
+        self,
+        board,
+        x,
+        y,
+        player
+    ):
 
         if not self.in_board(x, y):
             return False
@@ -146,7 +172,13 @@ class GoGame:
 
         return liberties > 0
 
-    def make_move(self, board, x, y, player):
+    def make_move(
+        self,
+        board,
+        x,
+        y,
+        player
+    ):
 
         new_board = copy.deepcopy(board)
 
@@ -163,7 +195,11 @@ class GoGame:
 
         return new_board
 
-    def get_valid_moves(self, board, player):
+    def get_valid_moves(
+        self,
+        board,
+        player
+    ):
 
         moves = []
 
@@ -185,77 +221,77 @@ class GoGame:
 
     def evaluate_board(self, board):
 
-    black_score = 0
-    white_score = 0
+        black_score = 0
+        white_score = 0
 
-    visited = set()
+        visited = set()
 
-    for i in range(BOARD_SIZE):
-        for j in range(BOARD_SIZE):
+        for i in range(BOARD_SIZE):
+            for j in range(BOARD_SIZE):
 
-            if (
-                board[i][j] == EMPTY
-                or (i, j) in visited
-            ):
-                continue
+                if (
+                    board[i][j] == EMPTY
+                    or (i, j) in visited
+                ):
+                    continue
 
-            group = self.get_group(
-                board,
-                i,
-                j,
-                visited
-            )
+                group = self.get_group(
+                    board,
+                    i,
+                    j,
+                    visited
+                )
 
-            liberties = self.count_liberties(
-                board,
-                group
-            )
+                liberties = self.count_liberties(
+                    board,
+                    group
+                )
 
-            group_size = len(group)
+                group_size = len(group)
 
-            score = 0
+                score = 0
 
-            score += group_size * 25
+                score += group_size * 25
 
-            score += liberties * 12
+                score += liberties * 12
 
-            if liberties == 1:
-                score -= 40
+                if liberties == 1:
+                    score -= 40
 
-            elif liberties == 2:
-                score -= 10
+                elif liberties == 2:
+                    score -= 10
 
-            else:
-                score += liberties * 2
+                else:
+                    score += liberties * 2
 
-            for x, y in group:
+                for x, y in group:
 
-                for nx, ny in self.neighbors(x, y):
+                    for nx, ny in self.neighbors(x, y):
 
-                    if board[nx][ny] == EMPTY:
+                        enemy = (
+                            BLACK
+                            if board[x][y] == WHITE
+                            else WHITE
+                        )
 
-                        if (
-                            2 <= nx <= 6
-                            and 2 <= ny <= 6
-                        ):
-                            score += 3
+                        if board[nx][ny] == enemy:
+                            score += 5
 
-                    enemy = (
-                        BLACK
-                        if board[x][y] == WHITE
-                        else WHITE
-                    )
+                        if board[nx][ny] == EMPTY:
 
-                    if board[nx][ny] == enemy:
-                        score += 5
+                            if (
+                                2 <= nx <= 6
+                                and 2 <= ny <= 6
+                            ):
+                                score += 3
 
-            if board[i][j] == BLACK:
-                black_score += score
+                if board[i][j] == BLACK:
+                    black_score += score
 
-            else:
-                white_score += score
+                else:
+                    white_score += score
 
-    return white_score - black_score
+        return white_score - black_score
 
     def calculate_score(self, board):
 
@@ -284,12 +320,15 @@ class GoGame:
                         group
                     )
 
-                    score = len(group) + liberties
+                    score = (
+                        len(group)
+                        + liberties
+                    )
 
                     if board[i][j] == BLACK:
                         black_score += score
 
-                    elif board[i][j] == WHITE:
+                    else:
                         white_score += score
 
         return black_score, white_score
@@ -333,9 +372,21 @@ class GoGame:
         )
 
         if black_score > white_score:
-            return BLACK, black_score, white_score
+            return (
+                BLACK,
+                black_score,
+                white_score
+            )
 
-        if white_score > black_score:
-            return WHITE, black_score, white_score
+        elif white_score > black_score:
+            return (
+                WHITE,
+                black_score,
+                white_score
+            )
 
-        return "DRAW", black_score, white_score
+        return (
+            "DRAW",
+            black_score,
+            white_score
+        )
