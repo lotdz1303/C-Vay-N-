@@ -112,7 +112,7 @@ class GoGame:
 
         return moves
 
-    def evaluate_board(self, board):
+  def evaluate_board(self, board):
 
     black_score = 0
     white_score = 0
