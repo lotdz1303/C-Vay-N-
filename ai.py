@@ -41,7 +41,7 @@ class MinimaxAI:
         scored.sort(reverse=True)
 
         top_moves = [
-            move for _, move in scored[:8]
+            move for _, move in scored[:14]
         ]
 
         random.shuffle(top_moves)
