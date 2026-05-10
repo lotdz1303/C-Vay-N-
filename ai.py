@@ -1,126 +1,85 @@
 import math
-from game_logic import BLACK, WHITE, EMPTY, BOARD_SIZE
+import random
+from game_logic import BLACK, WHITE
 
 
 class MinimaxAI:
-    def __init__(self, game, depth=2):
+
+    def __init__(self, game, depth=1):
         self.game = game
         self.depth = depth
-        self.max_candidates = 8
 
     def get_candidate_moves(self, board, player):
-        candidates = set()
-        has_stone = False
 
-        for i in range(BOARD_SIZE):
-            for j in range(BOARD_SIZE):
-
-                if board[i][j] != EMPTY:
-                    has_stone = True
-
-                    for dx in range(-1, 2):
-                        for dy in range(-1, 2):
-
-                            nx = i + dx
-                            ny = j + dy
-
-                            if 0 <= nx < BOARD_SIZE and 0 <= ny < BOARD_SIZE:
-                                if board[nx][ny] == EMPTY:
-                                    candidates.add((nx, ny))
-
-        if not has_stone:
-            return [(BOARD_SIZE // 2, BOARD_SIZE // 2)]
-
-        valid_moves = []
-
-        for x, y in candidates:
-            if self.game.is_valid_move(board, x, y, player):
-                valid_moves.append((x, y))
-
-        if not valid_moves:
-            for i in range(BOARD_SIZE):
-                for j in range(BOARD_SIZE):
-
-                    if (
-                        board[i][j] == EMPTY
-                        and self.game.is_valid_move(board, i, j, player)
-                    ):
-                        valid_moves.append((i, j))
-
-        valid_moves.sort(
-            key=lambda move: self.move_priority(board, move, player),
-            reverse=True
+        valid_moves = self.game.get_valid_moves(
+            board,
+            player
         )
 
-        return valid_moves[:self.max_candidates]
+        center = 4
 
-    def move_priority(self, board, move, player):
-        x, y = move
+        scored = []
 
-        center = BOARD_SIZE // 2
+        for x, y in valid_moves:
 
-        score = 0
+            distance = (
+                abs(x - center)
+                + abs(y - center)
+            )
 
-        opponent = BLACK if player == WHITE else WHITE
+            score = -distance
 
-        distance_to_center = abs(x - center) + abs(y - center)
+            neighbors = self.game.neighbors(x, y)
 
-        score += max(0, 10 - distance_to_center)
+            for nx, ny in neighbors:
 
-        ally_neighbors = 0
-        enemy_neighbors = 0
-        empty_neighbors = 0
+                if board[nx][ny] != ".":
+                    score += 4
 
-        for nx, ny in self.game.neighbors(x, y):
+            scored.append((score, (x, y)))
 
-            if board[nx][ny] == player:
-                ally_neighbors += 1
+        scored.sort(reverse=True)
 
-            elif board[nx][ny] == opponent:
-                enemy_neighbors += 1
+        top_moves = [
+            move for _, move in scored[:8]
+        ]
 
-            else:
-                empty_neighbors += 1
+        random.shuffle(top_moves)
 
-        score += ally_neighbors * 12
+        return top_moves
 
-        score += enemy_neighbors * 8
+    def minimax(
+        self,
+        board,
+        depth,
+        alpha,
+        beta,
+        maximizing
+    ):
 
-        if ally_neighbors >= 2:
-            score += 25
+        if (
+            depth == 0
+            or self.game.is_game_over(board)
+        ):
+            return (
+                self.game.evaluate_board(board),
+                None
+            )
 
-        if enemy_neighbors >= 2:
-            score += 18
+        player = (
+            WHITE if maximizing else BLACK
+        )
 
-        if empty_neighbors <= 1:
-            score -= 15
-
-        surround_bonus = 0
-
-        for nx, ny in self.game.neighbors(x, y):
-
-            if board[nx][ny] == opponent:
-
-                enemy_liberties = self.game.count_liberties(board, nx, ny)
-
-                if enemy_liberties <= 2:
-                    surround_bonus += 20
-
-        score += surround_bonus
-
-        return score
-
-    def minimax(self, board, depth, alpha, beta, maximizing):
-
-        if depth == 0:
-            return self.game.evaluate_board(board), None
-
-        player = WHITE if maximizing else BLACK
-
-        valid_moves = self.get_candidate_moves(board, player)
+        valid_moves = self.get_candidate_moves(
+            board,
+            player
+        )
 
         if not valid_moves:
-            return self.game.evaluate_board(board), None
+            return (
+                self.game.evaluate_board(board),
+                None
+            )
 
         best_move = None
 
@@ -132,7 +91,12 @@ class MinimaxAI:
 
                 x, y = move
 
-                new_board = self.game.make_move(board, x, y, WHITE)
+                new_board = self.game.make_move(
+                    board,
+                    x,
+                    y,
+                    WHITE
+                )
 
                 eval_score, _ = self.minimax(
                     new_board,
@@ -143,7 +107,9 @@ class MinimaxAI:
                 )
 
                 if eval_score > max_eval:
+
                     max_eval = eval_score
+
                     best_move = move
 
                 alpha = max(alpha, eval_score)
@@ -161,7 +127,12 @@ class MinimaxAI:
 
                 x, y = move
 
-                new_board = self.game.make_move(board, x, y, BLACK)
+                new_board = self.game.make_move(
+                    board,
+                    x,
+                    y,
+                    BLACK
+                )
 
                 eval_score, _ = self.minimax(
                     new_board,
@@ -172,7 +143,9 @@ class MinimaxAI:
                 )
 
                 if eval_score < min_eval:
+
                     min_eval = eval_score
+
                     best_move = move
 
                 beta = min(beta, eval_score)
