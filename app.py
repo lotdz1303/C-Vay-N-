@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session
-from game_logic import GoGame, BLACK, WHITE, BOARD_SIZE
+from game_logic import GoGame, BLACK, WHITE, EMPTY, BOARD_SIZE
 from ai import MinimaxAI
 
 
@@ -41,10 +41,12 @@ def set_result(effect, black_score, white_score):
         session["message"] = (
             f"🎉 BẠN ĐÃ THẮNG AI! Điểm bạn: {black_score} - Điểm AI: {white_score}"
         )
+
     elif effect == "lose":
         session["message"] = (
             f"💀 BẠN ĐÃ THUA AI! Điểm bạn: {black_score} - Điểm AI: {white_score}"
         )
+
     else:
         session["message"] = (
             f"🤝 HÒA! Điểm bạn: {black_score} - Điểm AI: {white_score}"
@@ -53,6 +55,7 @@ def set_result(effect, black_score, white_score):
 
 def check_game_over(board, force_end=False):
     game = get_game()
+
     black_score, white_score = game.calculate_score(board)
 
     if black_score >= WIN_SCORE:
@@ -64,12 +67,15 @@ def check_game_over(board, force_end=False):
         return True
 
     if game.is_game_over(board) or force_end:
+
         winner, black_score, white_score = game.get_winner(board)
 
         if winner == BLACK:
             set_result("win", black_score, white_score)
+
         elif winner == WHITE:
             set_result("lose", black_score, white_score)
+
         else:
             set_result("draw", black_score, white_score)
 
@@ -92,7 +98,10 @@ def build_state():
         "win_score": WIN_SCORE,
         "game_over": session.get("game_over", False),
         "result_effect": session.get("result_effect"),
-        "message": session.get("message", "Bạn là X. AI là O. Bạn đi trước.")
+        "message": session.get(
+            "message",
+            "Bạn là X. AI là O. Bạn đi trước."
+        )
     }
 
 
@@ -114,6 +123,7 @@ def state():
 
 @app.route("/api/player-move", methods=["POST"])
 def player_move():
+
     if "board" not in session:
         new_game()
 
@@ -121,28 +131,54 @@ def player_move():
         return jsonify(build_state())
 
     data = request.get_json()
+
     x = int(data.get("x"))
     y = int(data.get("y"))
 
     game = get_game()
+
     board = get_board()
 
     if not game.is_valid_move(board, x, y, BLACK):
-        session["message"] = "Nước đi không hợp lệ. Hãy chọn vị trí khác."
+
+        session["message"] = (
+            "Nước đi không hợp lệ. Hãy chọn vị trí khác."
+        )
+
         return jsonify(build_state())
 
+    old_board = [row[:] for row in board]
+
     board = game.make_move(board, x, y, BLACK)
+
+    captured = []
+
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+
+            if (
+                old_board[i][j] == WHITE
+                and board[i][j] == EMPTY
+            ):
+                captured.append([i, j])
+
     save_board(board)
 
-    session["message"] = f"Bạn vừa đánh tại dòng {x}, cột {y}. AI đang suy nghĩ..."
+    session["message"] = (
+        f"Bạn vừa đánh tại dòng {x}, cột {y}. AI đang suy nghĩ..."
+    )
 
     check_game_over(board)
 
-    return jsonify(build_state())
+    state = build_state()
+    state["captured"] = captured
+
+    return jsonify(state)
 
 
 @app.route("/api/ai-move", methods=["POST"])
 def ai_move():
+
     if "board" not in session:
         new_game()
 
@@ -150,37 +186,68 @@ def ai_move():
         return jsonify(build_state())
 
     game = get_game()
+
     board = get_board()
 
     ai = MinimaxAI(game, depth=2)
+
     move = ai.get_best_move(board)
 
     if move is None:
-        session["message"] = "AI không còn nước đi. Đang kiểm tra kết quả..."
+
+        session["message"] = (
+            "AI không còn nước đi. Đang kiểm tra kết quả..."
+        )
+
         check_game_over(board, force_end=True)
+
         return jsonify(build_state())
 
     x, y = move
+
+    old_board = [row[:] for row in board]
+
     board = game.make_move(board, x, y, WHITE)
+
+    captured = []
+
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+
+            if (
+                old_board[i][j] == BLACK
+                and board[i][j] == EMPTY
+            ):
+                captured.append([i, j])
+
     save_board(board)
 
-    session["message"] = f"AI vừa đánh tại dòng {x}, cột {y}. Đến lượt bạn."
+    session["message"] = (
+        f"AI vừa đánh tại dòng {x}, cột {y}. Đến lượt bạn."
+    )
 
     check_game_over(board)
 
-    return jsonify(build_state())
+    state = build_state()
+    state["captured"] = captured
+
+    return jsonify(state)
 
 
 @app.route("/api/reset", methods=["POST"])
 def reset():
     new_game()
+
     return jsonify(build_state())
 
 
 @app.route("/api/finish", methods=["POST"])
 def finish():
+
     board = get_board()
+
     check_game_over(board, force_end=True)
+
     return jsonify(build_state())
 
 
