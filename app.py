@@ -189,7 +189,7 @@ def ai_move():
 
     board = get_board()
 
-    ai = MinimaxAI(game, depth=2)
+    ai = MinimaxAI(game, depth=1)
 
     move = ai.get_best_move(board)
 
