@@ -185,57 +185,77 @@ class GoGame:
 
     def evaluate_board(self, board):
 
-        black_score = 0
-        white_score = 0
+    black_score = 0
+    white_score = 0
 
-        for i in range(BOARD_SIZE):
-            for j in range(BOARD_SIZE):
+    visited = set()
 
-                if board[i][j] == BLACK:
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
 
-                    black_score += 10
+            if (
+                board[i][j] == EMPTY
+                or (i, j) in visited
+            ):
+                continue
 
-                    group = self.get_group(
-                        board,
-                        i,
-                        j
+            group = self.get_group(
+                board,
+                i,
+                j,
+                visited
+            )
+
+            liberties = self.count_liberties(
+                board,
+                group
+            )
+
+            group_size = len(group)
+
+            score = 0
+
+            score += group_size * 25
+
+            score += liberties * 12
+
+            if liberties == 1:
+                score -= 40
+
+            elif liberties == 2:
+                score -= 10
+
+            else:
+                score += liberties * 2
+
+            for x, y in group:
+
+                for nx, ny in self.neighbors(x, y):
+
+                    if board[nx][ny] == EMPTY:
+
+                        if (
+                            2 <= nx <= 6
+                            and 2 <= ny <= 6
+                        ):
+                            score += 3
+
+                    enemy = (
+                        BLACK
+                        if board[x][y] == WHITE
+                        else WHITE
                     )
 
-                    liberties = self.count_liberties(
-                        board,
-                        group
-                    )
+                    if board[nx][ny] == enemy:
+                        score += 5
 
-                    black_score += liberties * 3
+            if board[i][j] == BLACK:
+                black_score += score
 
-                    for nx, ny in self.neighbors(i, j):
+            else:
+                white_score += score
 
-                        if board[nx][ny] == BLACK:
-                            black_score += 2
-
-                elif board[i][j] == WHITE:
-
-                    white_score += 10
-
-                    group = self.get_group(
-                        board,
-                        i,
-                        j
-                    )
-
-                    liberties = self.count_liberties(
-                        board,
-                        group
-                    )
-
-                    white_score += liberties * 3
-
-                    for nx, ny in self.neighbors(i, j):
-
-                        if board[nx][ny] == WHITE:
-                            white_score += 2
-
-        return white_score - black_score
+    return white_score - black_score
 
     def calculate_score(self, board):
 
