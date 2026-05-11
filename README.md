@@ -24,20 +24,7 @@ Alpha-Beta dựa trên:
 Trong game đối kháng 2 người:
 - Một bên cố gắng tối đa hóa lợi ích → MAX 
 - Một bên cố gắng giảm lợi ích đối thủ → MIN
-Minimax hoạt động trên cây trạng thái:
-Ví dụ:
-          MAX
-        /     \
-      MIN     MIN
-     /  \     /  \
-    3    5   2    9
-- MAX chọn giá trị lớn nhất 
-- MIN chọn giá trị nhỏ nhất 
-Tính ngược từ lá:
-- MIN trái → min(3,5)=3 
-- MIN phải → min(2,9)=2 
-- MAX → max(3,2)=3 
-=> AI chọn nhánh trái.
+
 
 
 ## Demo
