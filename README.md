@@ -58,7 +58,7 @@ python app.py
 | STT | Họ và Tên | MSSV | Vai trò | Chi tiết công việc |
 |---|---|---|---|---|
 | 1 | Nguyễn Anh Quốc | 233009 | Leader / Backend | - Khởi tạo source base cho dự án Streamlit. <br> - Xây dựng cấu trúc chính của ứng dụng trong `app.py`. <br> - Kết nối giao diện, logic game và AI. <br> - Quản lý tiến độ, kiểm tra và tổng hợp source code. |
-| 2 | Trầm Quốc Hùng | 233044 | Dev AI / Backend / Report | - Xây dựng thuật toán Minimax cho AI. <br> - Tích hợp Alpha-Beta Pruning để tối ưu tốc độ tìm kiếm. <br> - Thiết kế hàm Heuristic Evaluation để đánh giá trạng thái bàn cờ. <br> - Kiểm thử khả năng ra quyết định của AI. <br> - Tổng hợp nội dung báo cáo, chỉnh sửa format README và hỗ trợ chuẩn bị thuyết trình. |
+| 2 | Trầm Quốc Hùng | 233044 | Dev AI / Backend / Report | - Xây dựng logic cho AI <br> Tăng độ nhận biết AI <br> - Chuẩn bị bài báo cáo trước khi thuyết trình .|
 | 3 | Trần Khai Nguyễn | 232749 | Frontend / UI Developer/Tester | -Thiết kế giao diện wed bằng html , css , js , python, Hiển thị bàn cờ , Quân cờ , Trạng thái.<br> - Xây dựng các nút chức năng Chơi Lại , Kết Thúc Tính Điểm <br> - Tối Ưu wed hiệu ứng tăng trải nghiệm chơi cờ vây. |
 | 4 | Huỳnh Hoàng Khang | 232583 | Dev AI / Backend | - Xậy dựng hệ thống AI , xây dựng logic cho AI <br> - Tối ứu hóa AI làm AI mượt hơn  . |
 | 5 | Ngô hữu Danh | 232818 | Tester / Document / Support | - Kiểm thử toàn bộ chức năng của ứng dụng. <br> - Phát hiện lỗi trong quá trình chơi và đề xuất chỉnh sửa. <br> - Viết file `README.md` hướng dẫn cài đặt, chạy local và demo. <br> - Hỗ trợ triển khai ứng dụng lên Streamlit Community Cloud.  |
