@@ -29,7 +29,7 @@ Trong game đối kháng 2 người:
 
 
 
-## Demo
+## Link Trải Nghiệm Game
 
 Trải nghiệm trực tiếp tại:
 
