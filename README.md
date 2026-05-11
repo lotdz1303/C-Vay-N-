@@ -1,4 +1,4 @@
-# Go 9x9 AI Web App
+# Cờ Vây AI 9X9
 
 - Go 9x9 AI Web App là một ứng dụng web mô phỏng trò chơi Cờ Vây (Go) 9x9, được xây dựng với mục tiêu kết hợp giữa lập trình web hiện đại và trí tuệ nhân tạo (AI) nhằm tái hiện một môi trường thi đấu chiến thuật thông minh, trực quan và đầy tính tương tác. Dự án được phát triển trên nền tảng Flask bằng ngôn ngữ Python, kết hợp cùng giao diện HTML, CSS và JavaScript để mang đến trải nghiệm mượt mà, thân thiện và dễ tiếp cận cho người dùng.
 - Điểm nổi bật của ứng dụng nằm ở hệ thống AI chơi cờ tự động, được thiết kế dựa trên các thuật toán tìm kiếm và ra quyết định nổi tiếng như Minimax, Alpha-Beta Pruning và Heuristic Evaluation. Nhờ đó, AI có khả năng phân tích trạng thái bàn cờ theo thời gian thực, đánh giá lợi thế chiến thuật giữa hai bên, dự đoán các kịch bản tiếp theo và lựa chọn những nước đi tối ưu nhất. Điều này không chỉ giúp tăng tính cạnh tranh trong trò chơi mà còn mô phỏng rõ nét cách một hệ thống trí tuệ nhân tạo “tư duy” và đưa ra quyết định trong môi trường có nhiều biến số.
