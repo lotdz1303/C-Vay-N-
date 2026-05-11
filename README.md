@@ -26,6 +26,16 @@ Alpha-Beta dựa trên:
 Trong game đối kháng 2 người:
 - Một bên cố gắng tối đa hóa lợi ích → MAX 
 - Một bên cố gắng giảm lợi ích đối thủ → MIN
+## Minimax
+Bản chất Logic: Max và Min
+Trong một trò chơi hai người (AI và Người), mục tiêu của mỗi bên là trái ngược nhau:
+•	AI (MAX): Luôn cố gắng chọn nước đi để có điểm số cao nhất (tối đa hóa lợi ích).
+•	Người chơi (MIN): AI giả định người chơi rất thông minh, nên họ sẽ luôn chọn nước đi khiến AI nhận được điểm số thấp nhất (tối thiểu hóa lợi ích của AI).
+Minimax biểu diễn mọi khả năng có thể xảy ra dưới dạng một cái cây ngược:
+•	Nút (Node): Đại diện cho một trạng thái của bàn cờ.
+•	Nhánh (Branch): Đại diện cho một nước đi hợp lệ.
+•	Lớp (Ply): Mỗi tầng của cây đại diện cho một lượt đi. Tầng 1 là lượt của AI, tầng 2 là lượt của đối thủ, cứ thế lặp lại.
+
 
 
 
