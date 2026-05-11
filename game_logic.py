@@ -8,7 +8,7 @@ WHITE = "O"
 
 
 class GoGame:
-
+//khởi tạo bàn cờ
     def __init__(self):
 
         self.board = [
