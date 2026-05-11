@@ -1,8 +1,10 @@
 # Go 9x9 AI Web App
 
-Một ứng dụng web mô phỏng trò chơi **C[object Object]ờ Vây 9x9**, được xây dựng bằng **Python Flask**, kết hợp giao diện **HTML/CSS/JavaScript** và tích hợp AI có khả năng tự động đưa ra nước đi dựa trên thuật toán **Minimax**, **Alpha-Beta Pruning** và **Heuristic Evaluation**.
+- Go 9x9 AI Web App là một ứng dụng web mô phỏng trò chơi Cờ Vây (Go) 9x9, được xây dựng với mục tiêu kết hợp giữa lập trình web hiện đại và trí tuệ nhân tạo (AI) nhằm tái hiện một môi trường thi đấu chiến thuật thông minh, trực quan và đầy tính tương tác. Dự án được phát triển trên nền tảng Flask bằng ngôn ngữ Python, kết hợp cùng giao diện HTML, CSS và JavaScript để mang đến trải nghiệm mượt mà, thân thiện và dễ tiếp cận cho người dùng.
+- Điểm nổi bật của ứng dụng nằm ở hệ thống AI chơi cờ tự động, được thiết kế dựa trên các thuật toán tìm kiếm và ra quyết định nổi tiếng như Minimax, Alpha-Beta Pruning và Heuristic Evaluation. Nhờ đó, AI có khả năng phân tích trạng thái bàn cờ theo thời gian thực, đánh giá lợi thế chiến thuật giữa hai bên, dự đoán các kịch bản tiếp theo và lựa chọn những nước đi tối ưu nhất. Điều này không chỉ giúp tăng tính cạnh tranh trong trò chơi mà còn mô phỏng rõ nét cách một hệ thống trí tuệ nhân tạo “tư duy” và đưa ra quyết định trong môi trường có nhiều biến số.
+- Không đơn thuần là một trò chơi giải trí, Go 9x9 AI Web App còn là một dự án mang tính học thuật và thực tiễn cao, thể hiện sự giao thoa giữa khoa học máy tính, thuật toán, và tư duy chiến lược. Ứng dụng giúp người dùng hiểu rõ hơn về cách AI vận hành trong các bài toán tối ưu, đồng thời tạo ra một nền tảng trực quan để sinh viên, nhà phát triển hoặc những người yêu thích công nghệ có thể khám phá và nghiên cứu sâu hơn về lĩnh vực Artificial Intelligence thông qua một bài toán kinh điển của trí tuệ nhân loại: Cờ Vây.
+- Với bàn cờ 9x9 nhỏ gọn nhưng đầy thách thức, dự án không chỉ tái hiện tinh thần chiến thuật đặc trưng của môn cờ cổ truyền hàng nghìn năm tuổi này, mà còn minh chứng cho tiềm năng ứng dụng mạnh mẽ của AI trong việc giải quyết các bài toán chiến lược phức tạp trong thế giới hiện đại. Go 9x9 AI Web App chính là nơi công nghệ gặp gỡ tư duy, nơi mỗi nước cờ không chỉ là một lựa chọn — mà còn là kết quả của hàng loạt phép tính và chiến lược được AI phân tích phía sau.
 
-Ứng dụng hướng đến mục tiêu minh họa cách AI có thể phân tích trạng thái bàn cờ, đánh giá lợi thế và lựa chọn nước đi phù hợp trong phạm vi bàn cờ 9x9.
 
 ---
 ## Alpha-Beta Pruning 
