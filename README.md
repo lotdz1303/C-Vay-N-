@@ -57,9 +57,9 @@ python app.py
 ## 3. Bảng Phân Công Công Việc Chi Tiết
 | STT | Họ và Tên | MSSV | Vai trò | Chi tiết công việc |
 |---|---|---|---|---|
-| 1 | Nguyễn Anh Quốc | 233009 | Leader / Backend | - Khởi tạo source base cho dự án Streamlit. <br> - Xây dựng cấu trúc chính của ứng dụng trong `app.py`. <br> - Kết nối giao diện, logic game và AI. <br> - Quản lý tiến độ, kiểm tra và tổng hợp source code. |
+| 1 | Nguyễn Anh Quốc | 233009 | Leader / Backend / Dev AI | - Khởi tạo source base cho dự án GibHub. <br> - Xây dựng cấu trúc chính của ứng dụng trong `app.py`. <br> - Kết nối giao diện, logic game và AI <br> - Tạo logic cho AI. <br> - Quản lý tiến độ, kiểm tra và tổng hợp source code. |
 | 2 | Trầm Quốc Hùng | 233044 | Dev AI / Backend / Report | - Xây dựng logic cho AI <br> Tăng độ nhận biết AI <br> - Chuẩn bị bài báo cáo trước khi thuyết trình .|
 | 3 | Trần Khai Nguyễn | 232749 | Frontend / UI Developer/Tester | -Thiết kế giao diện wed bằng html , css , js , python, Hiển thị bàn cờ , Quân cờ , Trạng thái.<br> - Xây dựng các nút chức năng Chơi Lại , Kết Thúc Tính Điểm <br> - Tối Ưu wed hiệu ứng tăng trải nghiệm chơi cờ vây. |
 | 4 | Huỳnh Hoàng Khang | 232583 | Dev AI / Backend | - Xậy dựng hệ thống AI , xây dựng logic cho AI <br> - Tối ứu hóa AI làm AI mượt hơn  . |
 | 5 | Ngô hữu Danh | 232818 | Tester / Document / Support | - Kiểm thử toàn bộ chức năng của ứng dụng. <br> - Phát hiện lỗi trong quá trình chơi và đề xuất chỉnh sửa. <br> - Viết file `README.md` hướng dẫn cài đặt, chạy local và demo. <br> - Hỗ trợ triển khai ứng dụng lên Streamlit Community Cloud.  |
-| 6 | nguyễn Hoàng Thông | 232676 | Deploy / Support | - Kiểm tra cấu trúc source code trước khi nộp. <br> - Hỗ trợ deploy ứng dụng lên ashboard render. <br> - Kiểm tra link demo và đảm bảo app chạy ổn định trên web.  |
+| 6 | nguyễn Hoàng Thông | 232676 | Deploy / Support | - Kiểm tra cấu trúc source code trước khi nộp. <br> - Hỗ trợ deploy ứng dụng lên Dashboard render. <br> - Kiểm tra link demo và đảm bảo app chạy ổn định trên web.  |
