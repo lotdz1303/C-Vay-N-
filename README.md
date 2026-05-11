@@ -5,8 +5,8 @@ Một ứng dụng web mô phỏng trò chơi **C[object Object]ờ Vây 9x9**, 
 Ứng dụng hướng đến mục tiêu minh họa cách AI có thể phân tích trạng thái bàn cờ, đánh giá lợi thế và lựa chọn nước đi phù hợp trong phạm vi bàn cờ 9x9.
 
 ---
-## Cơ Sở Lý Thuyết
-Alpha-Beta Pruning :
+## Alpha-Beta Pruning 
+---
 Alpha-Beta Pruning là kỹ thuật tối ưu của thuật toán Minimax trong AI chơi game đối kháng như:
 - Cờ Vây 9x9 
 - Cờ vua 
@@ -14,16 +14,16 @@ Alpha-Beta Pruning là kỹ thuật tối ưu của thuật toán Minimax trong 
 - Othello 
 -	Tic Tac Toe 
 Nó giúp AI:
--	tìm nước đi tốt hơn nhanh hơn, 
--	giảm số trạng thái cần xét, 
--	tăng độ sâu suy nghĩ mà không tốn quá nhiều thời gian. 
+- tìm nước đi tốt hơn nhanh hơn, 
+- giảm số trạng thái cần xét, 
+- tăng độ sâu suy nghĩ mà không tốn quá nhiều thời gian. 
 Alpha-Beta dựa trên:
--	Lý thuyết trò chơi (Game Theory) 
--	Tìm kiếm cây trạng thái (Game Tree Search) 
--	Nguyên lý Minimax 
+- Lý thuyết trò chơi (Game Theory) 
+- Tìm kiếm cây trạng thái (Game Tree Search) 
+- Nguyên lý Minimax 
 Trong game đối kháng 2 người:
--	Một bên cố gắng tối đa hóa lợi ích → MAX 
--	Một bên cố gắng giảm lợi ích đối thủ → MIN
+- Một bên cố gắng tối đa hóa lợi ích → MAX 
+- Một bên cố gắng giảm lợi ích đối thủ → MIN
 Minimax hoạt động trên cây trạng thái:
 Ví dụ:
           MAX
