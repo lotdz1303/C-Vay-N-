@@ -7,36 +7,68 @@
 
 
 ---
-## Alpha-Beta Pruning 
+# Cấu trúc thuật toán
+
+## 1. Minimax
+
+Minimax là thuật toán tìm kiếm trong game đối kháng 2 người.
+
+Trong hệ thống:
+- AI đóng vai trò MAX
+- Người chơi đóng vai trò MIN
+
+Nguyên lý:
+- MAX cố gắng chọn nước đi có điểm số cao nhất.
+- MIN cố gắng làm giảm điểm số của MAX.
+
+AI sẽ:
+1. Sinh tất cả nước đi hợp lệ.
+2. Xây dựng cây trạng thái.
+3. Duyệt đến độ sâu giới hạn.
+4. Đánh giá trạng thái bằng Heuristic.
+5. Chọn nước đi tối ưu.
+
 ---
-Alpha-Beta Pruning là kỹ thuật tối ưu của thuật toán Minimax trong AI chơi game đối kháng như:
-- Cờ Vây 9x9 
-- Cờ vua 
--	Cờ caro 
-- Othello 
--	Tic Tac Toe 
-Nó giúp AI:
-- tìm nước đi tốt hơn nhanh hơn, 
-- giảm số trạng thái cần xét, 
-- tăng độ sâu suy nghĩ mà không tốn quá nhiều thời gian. 
-Alpha-Beta dựa trên:
-- Lý thuyết trò chơi (Game Theory) 
-- Tìm kiếm cây trạng thái (Game Tree Search) 
-- Nguyên lý Minimax 
-Trong game đối kháng 2 người:
-- Một bên cố gắng tối đa hóa lợi ích → MAX 
-- Một bên cố gắng giảm lợi ích đối thủ → MIN
-## Minimax
-Bản chất Logic: Max và Min
-Trong một trò chơi hai người (AI và Người), mục tiêu của mỗi bên là trái ngược nhau:
-•	AI (MAX): Luôn cố gắng chọn nước đi để có điểm số cao nhất (tối đa hóa lợi ích).
-•	Người chơi (MIN): AI giả định người chơi rất thông minh, nên họ sẽ luôn chọn nước đi khiến AI nhận được điểm số thấp nhất (tối thiểu hóa lợi ích của AI).
-Minimax biểu diễn mọi khả năng có thể xảy ra dưới dạng một cái cây ngược:
-•	Nút (Node): Đại diện cho một trạng thái của bàn cờ.
-•	Nhánh (Branch): Đại diện cho một nước đi hợp lệ.
-•	Lớp (Ply): Mỗi tầng của cây đại diện cho một lượt đi. Tầng 1 là lượt của AI, tầng 2 là lượt của đối thủ, cứ thế lặp lại.
 
+## 2. Alpha-Beta Pruning
 
+Alpha-Beta là kỹ thuật tối ưu Minimax giúp:
+- giảm số lượng node cần duyệt,
+- tăng tốc độ xử lý,
+- cho phép AI suy nghĩ sâu hơn.
+
+### Alpha (α)
+Giá trị tốt nhất MAX đã tìm được.
+
+### Beta (β)
+Giá trị tốt nhất MIN đã tìm được.
+
+Điều kiện cắt tỉa:
+
+```math
+α ≥ β
+```
+
+Khi điều kiện này xảy ra:
+- nhánh hiện tại sẽ bị bỏ qua,
+- vì chắc chắn không ảnh hưởng kết quả cuối cùng.
+
+---
+
+## 3. Hàm Heuristic
+
+Do số trạng thái của cờ Vây quá lớn, AI không thể duyệt toàn bộ cây trò chơi.
+
+Vì vậy hệ thống sử dụng Heuristic để:
+- đánh giá nhanh trạng thái bàn cờ,
+- xác định lợi thế của AI.
+
+### Các yếu tố đánh giá:
+- số quân đang kiểm soát,
+- số khí (Liberties),
+- vùng lãnh thổ,
+- khả năng bao vây,
+- số quân bị bắt.
 
 
 ## Link Trải Nghiệm Game
