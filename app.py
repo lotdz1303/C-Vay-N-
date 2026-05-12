@@ -15,7 +15,7 @@ def new_game():
     session["board"] = game.board
     session["game_over"] = False
     session["result_effect"] = None
-    session["message"] = "Bạn là X. AI là O. Bạn đi trước."
+    session["message"] = "Bạn là Quân Đen. AI là Quân Trắng. Bạn đi trước."
 
 
 def get_game():
